@@ -1,4 +1,3 @@
-// 单源最短路 spfa
 #include<bits/stdc++.h>
 using namespace std;
 #define fi first
@@ -11,12 +10,14 @@ using namespace std;
 #define mod 1000000007
 #define mem(a,b) memset(a,b,sizeof(a))
 
-const int maxn = 1010;
+using namespace std;
 
-struct Edge {
+const int maxn = 10010;
+
+struct edge {
     int v, c;
 
-    Edge(int v, int c) {
+    edge(int v, int c) {
         this->v = v;
         this->c = c;
     }
@@ -29,7 +30,7 @@ int dist[maxn]; // 距离数组
 int n, m; // n个顶点，m条边
 
 void addEdge(int u, int v, int w) {
-    ver[u].push_back(Edge(v, w));
+    ver[u].push_back(edge(v, w));
 }
 
 bool spfa(int st) {
@@ -40,14 +41,13 @@ bool spfa(int st) {
         int u = q.front(); q.pop();
         vis[u] = false;
         for(int i = 0;i < ver[u].size();i++) {
-            int v = ver[u][i].v;
-            int c = ver[u][i].c;
+            int v = ver[u][i].v; int c = ver[u][i].c;
             if(dist[v] > dist[u]+c) {
                 dist[v] = dist[u] + c;
                 if(!vis[v]) {
                     vis[v] = true;
                     q.push(v);
-                    if(++cnt[v] > n) return false; // 判定负环回路
+                    if(++cnt[v] > n) return false; // 存在负环回路
                 }
             }
         }
@@ -57,16 +57,16 @@ bool spfa(int st) {
 
 int main() {
     while(scanf("%d %d", &n, &m) != EOF) {
-        for(int i = 0;i <= n;i++) ver[i].clear();
+        if(n==0 && m==0) return 0;
+        for(int i = 1;i <= n;i++) ver[i].clear();
         int u, v, w;
         for(int i = 0;i < m;i++) {
-            cin >> u >> v >> w;
+            scanf("%d %d %d", &u, &v, &w);
             addEdge(u, v, w);
             addEdge(v, u, w);
         }
-        int start = 1;
-        spfa(start);
-        cout << dist[n] << endl;
+        spfa(1);
+        printf("%d\n", dist[n]);
     }
     return 0;
 }
