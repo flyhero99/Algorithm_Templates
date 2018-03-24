@@ -13,20 +13,20 @@ using namespace std;
 
 const int maxn = 1010;
 
+struct Edge {
+    int v, c;
+
+    Edge(int v, int c) {
+        this->v = v;
+        this->c = c;
+    }
+};
+
 vector<Edge> ver[maxn]; // 邻接表存图
 bool vis[maxn]; // 是否在队列
 int cnt[maxn];  // 每个顶点的入队列次数，用于判定是否存在负环回路
 int dist[maxn]; // 距离数组
 int n, m; // n个顶点，m条边
-
-struct Edge {
-    int v, cost;
-
-    Edge(int v, int cost) {
-        this.v = v;
-        this.cost = cost;
-    }
-}
 
 void addEdge(int u, int v, int w) {
     ver[u].push_back(Edge(v, w));
@@ -42,8 +42,8 @@ bool spfa(int st) {
         for(int i = 0;i < ver[u].size();i++) {
             int v = ver[u][i].v;
             int c = ver[u][i].c;
-            if(dist[u] > dist[v]+c) {
-                dist[u] = dist[v] + c;
+            if(dist[v] > dist[u]+c) {
+                dist[v] = dist[u] + c;
                 if(!vis[v]) {
                     vis[v] = true;
                     q.push(v);
@@ -62,6 +62,7 @@ int main() {
         for(int i = 0;i < m;i++) {
             cin >> u >> v >> w;
             addEdge(u, v, w);
+            addEdge(v, u, w);
         }
         int start = 1;
         spfa(start);
