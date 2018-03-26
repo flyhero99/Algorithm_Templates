@@ -23,7 +23,7 @@ struct edge {
     }
 };
 
-vector<Edge> ver[maxn]; // 邻接表存图
+vector<edge> ver[maxn]; // 邻接表存图
 bool vis[maxn]; // 是否在队列
 int cnt[maxn];  // 每个顶点的入队列次数，用于判定是否存在负环回路
 int dist[maxn]; // 距离数组
