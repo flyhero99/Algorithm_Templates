@@ -17,10 +17,7 @@ const int maxn = 10010;
 struct edge {
     int v, c;
 
-    edge(int v, int c) {
-        this->v = v;
-        this->c = c;
-    }
+    edge(int v=0, int c=0) : v(v), c(c) {}
 };
 
 vector<edge> ver[maxn]; // 邻接表存图

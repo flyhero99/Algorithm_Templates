@@ -6,7 +6,7 @@ using namespace std;
 #define pb push_back
 #define mp make_pair
 #define pii pair<int,int>
-#define INF 0x3f3f3f3f
+#define inf 0x3f3f3f3f
 #define mem(a,b) memset(a,b,sizeof(a))
 
 const int maxn = 100005;
@@ -14,67 +14,68 @@ const int maxm = 10005;
 
 using namespace std;
 
-int point, road;
-int u, v, w, st, ed;
+int n, m;
+int s, t;
 
-struct qnode{
+struct qnode {
     int v, c;
-    qnode(int tempv = 0, int tempc = 0) : v(tempv), c(tempc) {}
+
+    qnode(int v = 0, int c = 0) : v(v), c(c) {}
     bool operator < (const qnode &r) const {
-        return c > r.c;
+        return c < r.c;
     }
 };
 
 struct Edge {
-    int start, cost;
-    Edge(int tempstart = 0, int tempcost = 0 ) : start(tempstart), cost(tempcost) {}
+    int ed, cost;
 
+    Edge(int ed = 0, int cost = 0) : ed(ed), cost(cost) {}
 };
-vector <Edge> E[250];
-bool vis[250];
-int dist[250];
 
-void dij(int start) {
-    memset(vis, 0, sizeof(vis));
-    for(int i = 0; i < point; i++) dist[i] = INF;
-    priority_queue <qnode> pq;
-    while(!pq.empty()) pq.pop(); // reset
-    dist[start] = 0;
-    pq.push(qnode(start, 0));
-    qnode tmp;
+vector<Edge> ver[maxn];
+int dist[maxn];
+bool vis[maxn];
+
+void dijk(int st) {
+    mem(dist, inf); mem(vis, 0);
+    priority_queue<qnode> pq; while(!pq.empty()) pq.pop();
+    dist[st] = 0; pq.push(qnode(st, 0));
+
     while(!pq.empty()) {
-        tmp = pq.top();
-        pq.pop();
+        qnode tmp = pq.top(); po.pop();
         int u = tmp.v;
-        if(vis[u]) continue;
-        vis[u] = true;
-        for(int i = 0; i < E[u].size(); i++) {
-            int v = E[u][i].start;
-            int cost = E[u][i].cost;
-            if(!vis[v]) {
-                dist[v] = min(dist[v], dist[u]+cost);
-                pq.push(qnode(v, dist[v]));
+        if(!vis[u]) {
+            vis[u] = true;
+            for(int i = 0;i < ver[u].size();i++) {
+                int v = ver[u][i].ed;
+                int c = ver[u][i].cost;
+                if(!vis[v]) {
+                    vis[v] = true;
+                    dist[v] = min(dist[v], dist[u]+c);
+                    pq.push(qnode(v, dist[v]));
+                }
             }
         }
     }
 }
 
-void addedge(int u, int v, int w) {
-  	E[u].push_back(Edge(v, w));
-  	E[v].push_back(Edge(u, w));
+void addEdge(int u, int v, int w) { // 单向加边
+    ver[u].push_back(Edge(v, w));
 }
 
-int main(){
- 	while(cin >> point >> road ) {
-    	for(int i = 0; i <= point; ++i) E[i].clear();
-    	for(int i = 0; i < road; ++i) {
-        	scanf("%d %d %d", &u, &v, &w);
-        	addedge(u, v, w);
-    	}
-    	scanf("%d %d", &st, &ed);
-    	dij(st);
-    	if(dist[ed] == INF) puts("-1");
-    	else printf("%d\n", dist[ed]);
- 	}
- 	return 0;
+int main() {
+    while(scanf("%d %d", &n, &m) != EOF) {
+        int u, v, w;
+        for(int i = 0;i < n;i++) ver[i].clear();
+        for(int i = 0;i < m;i++) {
+            scanf("%d %d %d", &u, &v, &w);
+            addEdge(u, v, w);
+            addEdge(v, u, w);
+        }
+        s = 1, t = n;
+        dijk(s);
+        if(dist[t] == inf) printf("-1\n");
+        else printf("%d\n", dist[t]);
+    }
+    return 0;
 }
