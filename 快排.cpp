@@ -1,8 +1,3 @@
-/*	
-	b[i][j]表示第i个矩形可以嵌套在第j个矩形中
-  	状态转移方程为：dp[i] = max(dp[j]) + 1;
-*/
-
 // #include<bits/stdc++.h>
 #include<iostream>
 #include<cstdio>
@@ -23,12 +18,8 @@ void quicksort(int st, int ed) {
 		int tmp;
 		int i = st, j = ed;
 		do {
-			while(a[i] < base && i < ed) {
-				i++;
-			}
-			while(a[j] > base && j > st) {
-				j--;
-			}
+			while(a[i] < base && i < ed) i++;
+			while(a[j] > base && j > st) j--;
 			if(i <= j) {
 				tmp = a[i];
 				a[i] = a[j];
@@ -36,7 +27,7 @@ void quicksort(int st, int ed) {
 				i++;
 				j--;
 			}
-		}while(i <= j);
+		} while(i <= j);
 		if(st < j) quicksort(st, j);
 		if(ed > i) quicksort(i, ed);
 	}
