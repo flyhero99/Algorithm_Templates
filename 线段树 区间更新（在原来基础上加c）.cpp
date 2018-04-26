@@ -34,7 +34,7 @@ inline int read() {
 }
 
 int sum[maxn<<2], add[maxn<<2];
-int t, n;
+int t, n, q;
 struct node {
 	int l, r;
 	int mid() {return (l+r) >> 1;}
@@ -42,25 +42,30 @@ struct node {
 
 void pushup(int rt) {sum[rt] = sum[rt<<1]+sum[rt<<1|1];}
 
-void pushdown(int rt, int m) {
+// a[l,r]+=c则是+=，a[l,r]=c则是=。
+void pushdown(int rt, int len) {
 	if(add[rt]) {
 		add[rt<<1] += add[rt];
 		add[rt<<1|1] += add[rt];
-		sum[rt<<1] += add[rt]*(m - (m>>1));
-		sum[rt<<1|1] += add[rt] * (m>>1);
+		sum[rt<<1] += add[rt]*(len - (len>>1));
+		sum[rt<<1|1] += add[rt] * (len>>1);
 		add[rt] = 0;
 	}
 }
 
 void build(int l, int r, int rt) {
 	tr[rt].l = l, tr[rt].r = r; add[rt] = 0;
-	if(l == r) {scanf("%d", &sum[rt]); return;}
+	if(l == r) {
+		scanf("%d", &sum[rt]);
+		return;
+	}
 	int m = tr[rt].mid();
 	build(l, m, rt<<1);
 	build(m+1, r, rt<<1|1);
 	pushup(rt);
 }
 
+// a[l,r]+=c或a[l,r]=c，就把所有的+=变成=
 void update(int c, int l, int r, int rt) {
 	if(tr[rt].l == l && tr[rt].r == r) {
 		add[rt] += c;

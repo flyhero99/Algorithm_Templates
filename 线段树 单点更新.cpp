@@ -45,23 +45,23 @@ void build(int l, int r, int rt) {
     pushup(rt);
 }
 
-void update(int L, int C, int l, int r, int root) {
-    if(l == r) {
-        sum[root] = C;
+void update(int key, int value, int tree_l, int tree_r, int rt) {
+    if(tree_l == tree_r) {
+        sum[rt] = value;
         return;
     }
-    int m = (l+r) >> 1;
-    if(L <= m) update(L, C, l, m, root<<1);
-    else update(L, C, m+1, r, root<<1|1);
-    pushup(root);
+    int m = (tree_l+tree_r) >> 1;
+    if(key <= m) update(key, value, tree_l, m, rt<<1);
+    else update(key, value, m+1, tree_r, rt<<1|1);
+    pushup(rt);
 }
 
-int query(int L, int R, int l, int r, int root) {
-    if(L <= l && r <= R) return sum[root];
-    int m = (l+r) >> 1;
+int query(int query_l, int query_r, int tree_l, int tree_r, int rt) {
+    if(query_l <= tree_l && tree_r <= query_r) return sum[rt];
+    int m = (tree_l+tree_r) >> 1;
     int ans = 0;
-    if(L <= m) ans = max(ans, query(L, R, l, m, root<<1));
-    if(R > m) ans = max(ans, query(L, R, m+1, r, root<<1|1));
+    if(query_l <= m) ans = max(ans, query(query_l, query_r, tree_l, m, rt<<1));
+    if(query_r > m) ans = max(ans, query(query_l, query_r, m+1, tree_r, rt<<1|1));
     return ans;
 }
 
@@ -70,20 +70,14 @@ int main() {
     while(cin >> n >> m) {
         for(int i = 1; i <= n; i++) cin >> a[i];
         build(1, n, 1);
-        // for(int i = 0; i <= 30; i++) cout << sum[i] << ' ';
-        // cout << endl;
         while(m--) {
             char c[2];
             int x, y;
             cin >> c >> x >> y;
             if(c[0] == 'Q') {
-                // cout << "cnm" << endl;
-                // x = read(); y = read();
-                // cout << x <<' ' << y << endl;
-                cout << query(x, y, 1, n, 1) << endl;;
+                cout << query(x, y, 1, n, 1) << endl;
             }
             else if(c[0] == 'U') {
-                // x = read(); y = read();
                 update(x, y, 1, n, 1);
             }
         }
