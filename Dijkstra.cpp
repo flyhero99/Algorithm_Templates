@@ -1,81 +1,71 @@
-#include<bits/stdc++.h>
-using namespace std;
-#define fi first
-#define se second
-#define ll long long
-#define pb push_back
-#define mp make_pair
-#define pii pair<int,int>
+#include <bits/stdc++.h>
+#define MOD 1000000007
 #define inf 0x3f3f3f3f
-#define mem(a,b) memset(a,b,sizeof(a))
-
-const int maxn = 100005;
-const int maxm = 10005;
-
+#define mem(a, b) memset(a, b, sizeof(a))
 using namespace std;
+
+const int maxn = 200005;
 
 int n, m;
-int s, t;
+int st, ed;
 
 struct qnode {
     int v, c;
-
     qnode(int v = 0, int c = 0) : v(v), c(c) {}
     bool operator < (const qnode &r) const {
-        return c < r.c;
+        return c > r.c ;
     }
 };
 
 struct Edge {
-    int ed, cost;
+    int start, cost;
+    Edge(int start = 0 , int cost = 0) : start(start), cost(cost) {}
 
-    Edge(int ed = 0, int cost = 0) : ed(ed), cost(cost) {}
 };
 
-vector<Edge> ver[maxn];
-int dist[maxn];
+vector <Edge> vec[maxn] ;
 bool vis[maxn];
+int dist[maxn];
 
 void dijk(int st) {
-    mem(dist, inf); mem(vis, 0);
+    mem(vis, 0);
+    for(int i = 0; i <= n; i++) dist[i] = inf;
     priority_queue<qnode> pq; while(!pq.empty()) pq.pop();
     dist[st] = 0; pq.push(qnode(st, 0));
-
+    qnode tmp;
     while(!pq.empty()) {
-        qnode tmp = pq.top(); po.pop();
+        tmp = pq.top(); pq.pop();
         int u = tmp.v;
-        if(!vis[u]) {
-            vis[u] = true;
-            for(int i = 0;i < ver[u].size();i++) {
-                int v = ver[u][i].ed;
-                int c = ver[u][i].cost;
-                if(!vis[v]) {
-                    vis[v] = true;
-                    dist[v] = min(dist[v], dist[u]+c);
-                    pq.push(qnode(v, dist[v]));
-                }
+        if(vis[u]) continue;
+        vis[u] = true;
+        for(int i = 0; i < vec[u].size(); i++) {
+            int v = vec[u][i].start;
+            int cost = vec[u][i].cost;
+            if(!vis[v]) {
+                dist[v] = min(dist[v], dist[u]+cost);
+                pq.push(qnode(v, dist[v]));
             }
         }
     }
 }
 
-void addEdge(int u, int v, int w) { // å•å‘åŠ è¾¹
-    ver[u].push_back(Edge(v, w));
+void addedge(int u, int v, int w) { // µ¥Ïò¼Ó±ß
+    vec[u].push_back(Edge(v,w));
 }
 
 int main() {
-    while(scanf("%d %d", &n, &m) != EOF) {
+    int cas; cin >> cas;
+    while(cas--) {
+        scanf("%d %d", &n, &m);
+        for(int i = 0; i <= n; i++) vec[i].clear();
         int u, v, w;
-        for(int i = 0;i < n;i++) ver[i].clear();
-        for(int i = 0;i < m;i++) {
+        for(int i = 0; i < m; i++) {
             scanf("%d %d %d", &u, &v, &w);
-            addEdge(u, v, w);
-            addEdge(v, u, w);
+            addedge(u, v, w);
         }
-        s = 1, t = n;
-        dijk(s);
-        if(dist[t] == inf) printf("-1\n");
-        else printf("%d\n", dist[t]);
+        st = 1, ed = n;
+        dijk(st);
+        printf("%d\n", dist[ed]);
     }
     return 0;
 }
